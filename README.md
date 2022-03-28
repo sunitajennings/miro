@@ -22,3 +22,9 @@ Otherwise, you can
 - connect & "remember": if you use a login id that's already associated with an MX user, we'll retrieve the connection status for the existing user
 
 Finally, for ease of use, this app exposes *MX user creation & deletion* as well.
+
+## caveats/limitations
+
+This app uses conventions/patterns to establish a relationship between your users and MX users. If you followed this pattern as-is in production, you would incur charges for every MX user you create.
+
+Also - the account information displayed here are obtained through *aggregation* jobs (aggregation is run by default when you create a new connection between an institution and MX user). In order to retrieve more reliable account and routing numbers you should run a *verification* job.
