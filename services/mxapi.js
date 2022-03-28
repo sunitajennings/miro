@@ -8,7 +8,6 @@ export class HTTPResponseError extends Error {
 }
 
 export function constants() {
-    console.log("RAR: " + process.env.BASIC_AUTH_TOKEN)
     return {
         mx_base_url: mx_base_url,
         mx_api_headers: {
