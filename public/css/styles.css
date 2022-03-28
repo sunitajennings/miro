@@ -1,0 +1,141 @@
+body {
+    margin-top: 2em;
+}
+td, th {
+    vertical-align: top;
+}
+section {
+    border: 1px;
+    border-style: dashed;
+    padding: 10px;
+    margin: 0px 0px 10px;
+    /* top horizontal bottom */
+    width: fit-content;
+    min-width: 800px;
+}
+.action_bar {
+    display:flex;
+}
+
+.action_bar a {
+    padding-right: 10px;
+    border: 1px;
+}
+
+.fi-rs-search-local:before {
+    content: "\f407";
+    }
+.form-login-fields {
+    padding-bottom: 0.5em;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+.form-simple {
+    display: flex;
+    flex-direction: column;
+}
+.form-simple>button {
+    width: fit-content;
+}
+.fieldrow {
+    display: grid;
+    grid-template-columns: 150px auto;
+    grid-template-areas:
+        'label inputfield'
+    ;
+}
+.fieldrow>label {
+    grid-area: label;
+}
+.fieldrow>input {
+    grid-area: inputfield;
+}
+.form-table {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.form-table > input {
+    width: fit-content;
+}
+/*
+.apiform-vertical {
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+}
+
+.broken {
+    border: 1px solid red;
+}
+
+
+.fieldrow {
+    display: flex;
+    justify-content: space-between;
+}
+*/
+
+/*
+.formsection>p {
+    margin: 30px 0px 0px;
+}
+
+.formsection>h2 {
+    margin: 0px;
+}
+
+.icon-button {
+    border: none;
+    background-color: transparent;
+}
+
+.icon-button:hover {
+    background-color: #2800ff43;
+}
+*/
+.icon-link {
+    text-decoration: none;
+    margin-left: 0.5em;
+}
+/*
+.notdone {
+    color: #2600ff43;
+}
+
+.pagecontrols {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+}
+*/
+.table-cell-login {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.tabular-list {
+    border-collapse: collapse;
+    width: fit-content;
+}
+
+.tabular-list td,
+.tabular-list th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.tabular-list th {
+    background-color: #2800ff43;
+    color: white;
+}
+
+.tabular-list tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.tabular-list tr:hover {
+    background-color: #ddd;
+}

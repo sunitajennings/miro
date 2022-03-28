@@ -1,0 +1,55 @@
+<%- include('fragment-header.ejs') %>
+
+<h1 class="title">users</h1>
+
+<section>
+  <div class="action_bar">
+    <a href="/user" class="icon-link"><i class="fa-solid fa-user-plus"></i></a>
+    <a href="/users" class="icon-link"><i class="fa-solid fa-arrows-rotate"></i></a>
+
+  </div>
+  <% if (action == 'create') { %>
+
+    <form id="user_form" name="user_form" class="form-simple" method="post" action="/user">
+        <div class="fieldrow"><label for="user_email">Email: </label><input type="email" name="user_email" size=20></input></div>
+        <div class="fieldrow"><label for="user_id">MX User Id: </label><input type="id" name="user_id" size=20></input></div>
+        <div class="fieldrow"><label for="client_user_id">Client-specific User_Id: </label><input type="client_user_id" name="client_user_id" size=20></input></div>
+        <button type="submit" size=20>Create User</button>
+    </form>
+  <% } %>
+
+
+  <% if (error == 409) { %>
+    <p>Sorry, a user with that id / external guid already exists</p><br/>
+  <% } %>
+
+  <form id="user_form" name="user_form" class="form-table" method="post" action="/users">
+    <% if (users != null && users.length==0) { %> 
+        <p> None found </p>
+    <% } else { %>
+        <table class="tabular-list">
+          <tr>
+            <th></th>
+            <th>Email</th>
+            <th>Guid</th>
+            <th>Id</th>
+            <th>Client-specified User Id</th>
+          </tr>
+        <% for (let i=0; i<users.length; i++) { %>
+          <tr>
+            <td><button title="Delete user" class="icon-button" type="submit" name="user_guid" value="<%= users[i].guid %>"><i class="fa-solid fa-trash-can"></i></button></td>
+            <td><%= users[i].email %></td>
+            <td><%= users[i].guid %></td>
+            <td><%= users[i].id %></td>
+            <td><% if (users[i].metadata) { %>
+              <%= JSON.parse(users[i].metadata).client_user_id %>
+            <% } %></td>
+          </tr>
+        <% } %>
+            
+        </table>
+    <% } %>
+  </form>
+</section>
+
+<%- include('fragment-footer.ejs') %>

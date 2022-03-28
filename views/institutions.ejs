@@ -1,0 +1,128 @@
+<%- include('fragment-header.ejs') %>
+
+<h1 class="title">users, members -> accounts</h1>
+<section>
+    <form id="institution_form" name="institution_form" class="form-table" method="post" action="/institutions">
+        <% if (institutions != null && institutions.length==0) { %> 
+            <p> None found </p>
+        <% } else { %>
+            <table class="tabular-list">
+            <tr>
+                <th>Logo</th>
+                <th>Code</th>
+                <th>Name</th>
+                <th>User to Connect</th>
+                <th>Existing Member (connection)</th>
+                <th>Log into the Institution</th>
+                <th>MX platform accounts</th>
+            </tr>
+
+            <% for (var i=0; i<institutions.length; i++) { %>
+
+            <tr>
+                <td>
+                    <!-- INSTITUTION logo -->
+                    <img src="<%= institutions[i].small_logo_url %>" />
+                    <input type="hidden" name="institution<%= i %>small_logo_url" value="<%= institutions[i].small_logo_url %>" />
+                </td>
+                <td>
+                    <!-- INSTITUTION Code, used for api calls -->
+                    <%= institutions[i].code %>
+                    <input type="hidden" name="institution<%= i %>code" value="<%= institutions[i].code %>" />
+                </td>
+                <td>
+                    <!-- INSTITUTION Name -->
+                    <%= institutions[i].name %>
+                    <input type="hidden" name="institution<%= i %>name" value="<%= institutions[i].name %>" />
+                </td>
+                <td>
+                    <!-- USERS on this client, populates drop down list(s) 
+                         If a user was previously selected in this (institution) row, select them again 
+                         If the user doesn't have a name, display their guid -->
+                    <select name="<%= institutions[i].code %>_user" id="<%= institutions[i].code %>_user">
+                        <option value="unselected" selected> -- Select a user to connect -- </option>
+
+                    <% for (let u=0; u < users.length; u++) { %>
+                        <option value="<%= users[u].guid%>" 
+                        <% if (selecteduser != undefined && selecteduser == users[u].guid && selectedinstitution != null && selectedinstitution == institutions[i].code) {  %>
+                            selected
+                        <% }  %>
+                        >
+                        <% if (users[u].id == null) { %>
+                            <%= users[u].guid%></option>
+                        <% } else { %>
+                            <%= users[u].id%></option>
+                        <% } %>
+                    <% } %>
+                    </select>
+                    <button onclick="postFormTo('institution_form', '/member', 'selectedinstitution', '<%= institutions[i].code %>');" 
+                        title="Find a connected account" class="icon-button" type="button"><i class="fa-solid fa-magnifying-glass"></i></i></button>
+                </td>
+                <td>
+                    <!-- MEMBER for this client + (selected) user + institution (row) relationship
+                         If no member found, show a button to allow for creating a new one -->
+                <% if (foundmember != null && foundmember.user_guid == selecteduser && foundmember.institution_code == institutions[i].code) { %>
+                    <%= foundmember.user_id %> at <%= foundmember.institution_code %><br/>
+                    <%= foundmember.guid %><br/>
+                    Status: <%= foundmember.connection_status %><br/>
+                    Last aggregated at: <%= foundmember.successfully_aggregated_at %>
+                    <% if (foundmember.is_being_aggregated) { %>
+                     <br/> Aggregation in progress
+                    <% } %>
+                    <% if (foundmember.is_oauth) { %>
+                     <br/> (OAuth connection)
+                    <% } %>
+                <% } else {  %>
+                    <% if (selecteduser == undefined || selectedinstitution != institutions[i].code) { %>
+                        
+                    <% } else { %>
+                        no member found 
+
+                        <% if (selectedinstitution != institutions[i].code || credentials == undefined)  { %>
+                            <button onclick="postFormTo('institution_form', '/credentials', 'selectedinstitution', '<%= institutions[i].code %>');" 
+                                title="Connect an account" class="icon-button" type="button"><i class="fa-solid fa-user-plus"></i></button>       
+                        <% } %>
+                    <% } %>
+                <% } %>
+                </td>
+                <td class="table-cell-login">
+                <% if (foundmember == null || foundmember.user_guid != selecteduser || foundmember.institution_code != institutions[i].code) { %>
+                    <% if (selectedinstitution == institutions[i].code && credentials != undefined)  { %>
+                        <div class="form-login-fields">
+                          <div class="form-login-credential0">
+                            <%= credentials[0].label %> : <input type="text" name="credential0_entry" width=20 /> <br/>
+                            <input type="hidden" name="credential0_guid" value="<%= credentials[0].guid %>" />
+                          </div>
+                          <div class="form-login-credential1">
+                            <%= credentials[1].label %> : <input type="password" name="credential1_entry" width=20 /> <br/>
+                            <input type="hidden" name="credential1_guid" value="<%= credentials[1].guid %>" />
+                          </div>
+                        </div>
+                        <button onclick="postFormTo('institution_form', '/connect', 'selectedinstitution', '<%= institutions[i].code %>');" 
+                                title="Connect an account" class="icon-button" type="button">Connect</button>
+                    <% } %>
+                <% } %>
+                </td>
+                <td>
+                  <% if (foundmember != null && (foundmember.length > 0 || foundmember.guid != null)  && accounts == null && selectedinstitution == institutions[i].code) { %>
+                    <button onclick="postFormTo('institution_form', '/accounts', 'selectedinstitution', '<%= institutions[i].code %>');" 
+                            title="Get accounts" class="icon-button" type="button">Get Accounts</button>
+                  <% } else if (foundmember != null && accounts != null && selectedinstitution == institutions[i].code) { %>
+                    <% for (var a=0; a < accounts.length; a++) { %>
+                      <strong><%= accounts[a].name %></strong><br/>
+                      <li>Account Number: <%= accounts[a].account_number %></li>
+                      <li>Routing Number: <%= accounts[a].routing_number %></li>
+                      <li>Account Balance: $<%= accounts[a].balance %></li>
+                    <% } %>
+                  <% } %>
+                </td>
+            </tr>
+
+            <% } %>
+
+            </table>
+        <% } %>
+    </form>
+</section>
+
+<%- include('fragment-footer.ejs') %>

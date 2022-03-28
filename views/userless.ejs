@@ -1,0 +1,90 @@
+<%- include('fragment-header.ejs') %>
+
+<h1 class="title">get accounts</h1>
+<section>
+    <form id="institution_form" name="institution_form" class="form-table" method="post" action="">
+        <% if (institutions != null && institutions.length==0) { %> 
+            <p> None found </p>
+        <% } else { %>
+            <table class="tabular-list">
+            <tr>
+                <th>Logo</th>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Log into the Institution</th>
+                <th>Connection Status</th>
+                <th>Accounts</th>
+            </tr>
+
+            <% for (var i=0; i<institutions.length; i++) { %>
+            <tr>
+                <td>
+                    <!-- INSTITUTION logo -->
+                    <img src="<%= institutions[i].small_logo_url %>" />
+                    <input type="hidden" name="institution<%= i %>small_logo_url" value="<%= institutions[i].small_logo_url %>" />
+                </td>
+                <td>
+                    <!-- INSTITUTION Code, used for api calls -->
+                    <%= institutions[i].code %>
+                    <input type="hidden" name="institution<%= i %>code" value="<%= institutions[i].code %>" />
+                </td>
+                <td>
+                    <!-- INSTITUTION Name -->
+                    <%= institutions[i].name %>
+                    <input type="hidden" name="institution<%= i %>name" value="<%= institutions[i].name %>" />
+                </td>
+                <td class="table-cell-login">
+                    <% if (selectedinstitution == institutions[i].code && credentials != undefined)  { %>
+                        <div class="form-login-fields">
+                          <div class="form-login-credential0">
+                            <%= credentials[0].label %> : <input type="text" name="credential0_entry" width=20 /> <br/>
+                            <input type="hidden" name="credential0_guid" value="<%= credentials[0].guid %>" />
+                          </div>
+                          <div class="form-login-credential1">
+                            <%= credentials[1].label %> : <input type="password" name="credential1_entry" width=20 /> <br/>
+                            <input type="hidden" name="credential1_guid" value="<%= credentials[1].guid %>" />
+                          </div>
+                        </div>
+                        <button onclick="postFormTo('institution_form', '/userlessconnect', 'selectedinstitution', '<%= institutions[i].code %>');" 
+                                title="Connect an account" class="icon-button" type="button">Connect</button>
+                    <% } else if (selectedinstitution != institutions[i].code && user == undefined) { %>
+                            <button onclick="postFormTo('institution_form', '/userlesscredentials', 'selectedinstitution', '<%= institutions[i].code %>');" 
+                                title="Connect an account" class="icon-button" type="button"><i class="fa-solid fa-user-plus"></i></button>  
+                    <% } %>
+                </td>
+                <td>
+                  <% if (member && member.institution_code == institutions[i].code) { %> 
+                  <input type="hidden" id="memberguid" name="memberguid" value="<%= member.guid %>"/>
+                  <input type="hidden" id="userguid" name="userguid" value="<%= member.user_guid %>"/>
+                    Connection Status: <%= member.connection_status %>
+                            <button onclick="postFormTo('institution_form', '/userlessrefreshstatus', 'selectedinstitution', '<%= institutions[i].code %>');" 
+                                title="Refresh the connection status" class="icon-button" type="button"><i class="fa-solid fa-arrows-rotate"></i></button><br/> 
+                    Aggregation in progress: <%= member.is_being_aggregated %><br/>
+                    Last Aggregated At: <%= member.successfully_aggregated_at %> <br/>
+                  <% } %>
+                </td>
+                <td>
+                  <% if (user != null && (accounts == null || accounts.length == 0) && selectedinstitution == institutions[i].code && member.connection_status == 'CONNECTED') { %>
+                    <input type="hidden" name="selectedinstitution" value="<%= institutions[i].code %>" />
+                    <input type="hidden" name="memberguid" value="<%= member.guid %>" />
+                    <button onclick="postFormTo('institution_form', '/userlessaccounts', 'selecteduser', '<%= user %>');" 
+                            title="Get accounts" class="icon-button" type="button">Get Accounts</button>
+                  <% } else if (accounts != null && selectedinstitution == institutions[i].code) { %>
+                    <% for (var a=0; a < accounts.length; a++) { %>
+                      <strong><%= accounts[a].name %></strong><br/>
+                      <li>Account Number: <%= accounts[a].account_number %></li>
+                      <li>Routing Number: <%= accounts[a].routing_number %></li>
+                      <li>Account Balance: $<%= accounts[a].balance %></li>
+                    <% } %>
+                  <% } %>
+                </td>
+                
+
+            </tr>
+            <% } %>
+            </table>
+        <% } %>
+    </form>
+</section>
+
+<%- include('fragment-footer.ejs') %>
