@@ -515,5 +515,4 @@ function extractInstitutionsFromRequest(requestbody, divisor) {
 
 var listener = app.listen(port, function () {
     console.log('miro is listening on port ' + listener.address().port)
-    console.log('we will use this auth: ' + process.env.BASIC_AUTH_TOKEN)
 })
